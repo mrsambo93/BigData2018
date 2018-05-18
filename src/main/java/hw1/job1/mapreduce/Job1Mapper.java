@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import com.opencsv.RFC4180Parser;
 
 import hw1.utils.ColumnIndexes;
+import hw1.utils.UnixTime2Year;
 
 public class Job1Mapper extends Mapper<LongWritable, Text, IntWritable, Text> {
 
@@ -28,10 +29,8 @@ public class Job1Mapper extends Mapper<LongWritable, Text, IntWritable, Text> {
 		String line = value.toString();
 		RFC4180Parser parser = new RFC4180Parser();
 		String[] fields = parser.parseLine(line);
-		Date time = new Date((long)Long.valueOf(fields[ColumnIndexes.TIME])*1000L);
-		SimpleDateFormat format = new SimpleDateFormat("yyyy");
-		String yearString = format.format(time);
-		year.set(Integer.valueOf(yearString));
+		int yearInt = UnixTime2Year.unixTime2Year(Long.parseLong(fields[ColumnIndexes.TIME]));
+		year.set(yearInt);
 		
 		String cleanSummary = fields[ColumnIndexes.SUMMARY].toLowerCase().replaceAll(tokens, " ");
 		StringTokenizer tokenizer = new StringTokenizer(cleanSummary);
