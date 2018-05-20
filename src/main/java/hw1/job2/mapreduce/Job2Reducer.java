@@ -10,7 +10,6 @@ public class Job2Reducer extends Reducer<Text, Year2Score, Text, Text> {
 
 	public void reduce(Text key, Iterable<Year2Score> values, Context context) 
 			throws IOException, InterruptedException {
-		
 		ArrayList<Year2Score> elements = new ArrayList<Year2Score>();
 		for(Year2Score y2s : values) {
 			Year2Score copy = new Year2Score(y2s.getYear(), y2s.getScore());
@@ -31,11 +30,11 @@ public class Job2Reducer extends Reducer<Text, Year2Score, Text, Text> {
 			double mean = 0.0;
 			if(n != 0) {
 				mean = (double)score/(double)n;
+				Year2Score newElem = new Year2Score();
+				newElem.setYear(i);
+				newElem.setMean(mean);
+				results.add(newElem);
 			}
-			Year2Score newElem = new Year2Score();
-			newElem.setYear(i);
-			newElem.setMean(mean);
-			results.add(newElem);
 		}
 		
 		if(results.isEmpty())

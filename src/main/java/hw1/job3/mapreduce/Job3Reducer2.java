@@ -14,9 +14,7 @@ public class Job3Reducer2 extends Reducer<Text, Text, Text, IntWritable> {
 		
 		HashSet<String> userIDs = new HashSet<String>();
 		
-		for(Text userID : values) {
-			userIDs.add(userID.toString());
-		}
+		values.forEach(el -> userIDs.add(el.toString()));
 		
 		context.write(key, new IntWritable(userIDs.size()));
 	}
