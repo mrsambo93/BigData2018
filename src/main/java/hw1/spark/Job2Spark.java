@@ -27,6 +27,8 @@ public class Job2Spark {
 	}
 
 	public static void main(String[] args) {
+		double startTime = System.currentTimeMillis();
+		
 		SparkConf conf = new SparkConf().setAppName("Job2Spark");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
@@ -38,6 +40,10 @@ public class Job2Spark {
 		job.calculateScore(sc).sortByKey().saveAsTextFile(outputPathFile);
 		sc.close();
 		sc.stop();
+
+		double stopTime = System.currentTimeMillis();
+		double executionTime = (stopTime - startTime) / 1000;
+		System.out.println("TEMPO DI ESECUZIONE:\t" + executionTime + "s");
 	}
 
 	public JavaPairRDD<String, Tuple2<Integer, Double>> loadData(JavaSparkContext sc) {

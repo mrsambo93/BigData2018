@@ -24,6 +24,8 @@ public class Job3Spark {
 	}
 
 	public static void main(String[] args) {
+		double startTime = System.currentTimeMillis();
+		
 		SparkConf conf = new SparkConf().setAppName("Job3Spark");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
@@ -35,6 +37,10 @@ public class Job3Spark {
 		job.coupleProducts2Users(sc).sortByKey().saveAsTextFile(outputPathFile);
 		sc.close();
 		sc.stop();
+
+		double stopTime = System.currentTimeMillis();
+		double executionTime = (stopTime - startTime) / 1000;
+		System.out.println("TEMPO DI ESECUZIONE:\t" + executionTime + "s");
 	}
 
 	public JavaPairRDD<String, String> loadData(JavaSparkContext sc) {
@@ -59,8 +65,8 @@ public class Job3Spark {
 		JavaPairRDD<String, Integer> result = user2products.join(user2products)
 		.filter(user2couple -> user2couple._2._1.compareTo(user2couple._2._2) < 0)
 		.mapToPair(elem -> new Tuple2<String, String>(elem._2._1 + ", "+ elem._2._2, elem._1))
-		.sortByKey()
 		.groupByKey()
+		.sortByKey()
 		.mapToPair(couple2user -> {
 			Set<String> users = new HashSet<>();
 			couple2user._2.forEach(users::add);

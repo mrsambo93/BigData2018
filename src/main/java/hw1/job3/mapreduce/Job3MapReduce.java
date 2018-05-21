@@ -13,6 +13,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Job3MapReduce {
 	public static void main(String[] args) throws Exception {
+		double startTime = System.currentTimeMillis();
+		
     	Configuration conf = new Configuration();
     	Path tempFile = new Path("~/output/temp.txt");
 		Job job1 = new Job(conf, "Job3MapReduce1");
@@ -54,6 +56,10 @@ public class Job3MapReduce {
 		FileSystem hdfs = FileSystem.get(URI.create("hdfs://localhost:9000"), conf);
 		if(hdfs.exists(tempFile))
 			hdfs.delete(tempFile, true);
+		
+		double stopTime = System.currentTimeMillis();
+		double executionTime = (stopTime - startTime) / 1000;
+		System.out.println("TEMPO DI ESECUZIONE:\t" + executionTime + "s");
 
     }
 }

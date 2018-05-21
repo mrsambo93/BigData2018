@@ -36,6 +36,8 @@ public class Job1Spark implements Serializable {
 	}
 
 	public static void main(String[] args) {
+		double startTime = System.currentTimeMillis();
+		
 		SparkConf conf = new SparkConf().setAppName("Job1Spark");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
@@ -47,6 +49,10 @@ public class Job1Spark implements Serializable {
 		job.getCount(sc).sortByKey().saveAsTextFile(outputPathFile);
 		sc.close();
 		sc.stop();
+		
+		double stopTime = System.currentTimeMillis();
+		double executionTime = (stopTime - startTime) / 1000;
+		System.out.println("TEMPO DI ESECUZIONE:\t" + executionTime + "s");
 	}
 
 	public JavaPairRDD<Integer, List<String>> loadData(JavaSparkContext sc) {

@@ -9,6 +9,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Job2MapReduce {
 	public static void main(String[] args) throws Exception {
+		double startTime = System.currentTimeMillis();
+		
     	Job job = new Job(new Configuration(), "Job2MapReduce");
 
 		job.setJarByClass(Job2MapReduce.class);
@@ -26,6 +28,10 @@ public class Job2MapReduce {
 		job.setOutputValueClass(Text.class);
 
 		job.waitForCompletion(true);
+		
+		double stopTime = System.currentTimeMillis();
+		double executionTime = (stopTime - startTime) / 1000;
+		System.out.println("TEMPO DI ESECUZIONE:\t" + executionTime + "s");
     }
 
 }
