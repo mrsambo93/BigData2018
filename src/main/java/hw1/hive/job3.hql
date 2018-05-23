@@ -4,8 +4,7 @@ helpfulnessDenominator INT, score INT, time BIGINT, summary STRING, text STRING)
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
 with serdeproperties (
    "separatorChar" = ",",
-   "quoteChar"     = "\"",
-   "escapeChar"    = "\0"
+   "quoteChar"     = "\""
   )
 TBLPROPERTIES("skip.header.line.count"="1");
 
@@ -28,6 +27,6 @@ JOIN
 	) t2
 ON (t1.userId = t2.userId)
 GROUP BY t1.productId, t2.productId
-HAVING t1.productId != t2.productId
+HAVING t1.productId < t2.productId
 ORDER BY t1.productId;
 

@@ -1,8 +1,6 @@
 package hw1.job2.mapreduce;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;

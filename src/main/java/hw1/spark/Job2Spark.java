@@ -84,6 +84,6 @@ public class Job2Spark {
 					});
 					return new Tuple2<String, List<Tuple2<Integer, Double>>>(tuple._1, count);
 				});
-		return result;
+		return result.filter(el -> !el._2.isEmpty());
 	}
 }

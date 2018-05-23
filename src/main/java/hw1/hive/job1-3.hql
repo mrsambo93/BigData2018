@@ -4,8 +4,7 @@ helpfulnessDenominator INT, score INT, time BIGINT, summary STRING, text STRING)
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
 with serdeproperties (
    "separatorChar" = ",",
-   "quoteChar"     = "\"",
-   "escapeChar"    = "\0"
+   "quoteChar"     = "\""
   )
 TBLPROPERTIES("skip.header.line.count"="1");
 

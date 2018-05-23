@@ -1,9 +1,6 @@
 package hw1.job3.mapreduce;
 
-import java.net.URI;
-
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -16,7 +13,6 @@ public class Job3MapReduce {
 		double startTime = System.currentTimeMillis();
 		
     	Configuration conf = new Configuration();
-    	Path tempFile = new Path("~/output/temp.txt");
 		Job job1 = new Job(conf, "Job3MapReduce1");
     	
 		job1.setJarByClass(Job3MapReduce.class);
@@ -25,7 +21,7 @@ public class Job3MapReduce {
 		job1.setReducerClass(Job3Reducer1.class);
 
 		FileInputFormat.addInputPath(job1, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job1, tempFile);
+		FileOutputFormat.setOutputPath(job1, new Path(args[1]));
 
 		job1.setMapOutputKeyClass(Text.class);
 		job1.setMapOutputValueClass(Text.class);
@@ -42,8 +38,8 @@ public class Job3MapReduce {
 		job2.setMapperClass(Job3Mapper2.class);
 		job2.setReducerClass(Job3Reducer2.class);
 
-		FileInputFormat.addInputPath(job2, tempFile);
-		FileOutputFormat.setOutputPath(job2, new Path(args[1]));
+		FileInputFormat.addInputPath(job2, new Path(args[1]));
+		FileOutputFormat.setOutputPath(job2, new Path(args[2]));
 
 		job2.setMapOutputKeyClass(Text.class);
 		job2.setMapOutputValueClass(Text.class);
@@ -52,10 +48,6 @@ public class Job3MapReduce {
 		job2.setOutputValueClass(IntWritable.class);
 
 		job2.waitForCompletion(true);
-		
-		FileSystem hdfs = FileSystem.get(URI.create("hdfs://localhost:9000"), conf);
-		if(hdfs.exists(tempFile))
-			hdfs.delete(tempFile, true);
 		
 		double stopTime = System.currentTimeMillis();
 		double executionTime = (stopTime - startTime) / 1000;
