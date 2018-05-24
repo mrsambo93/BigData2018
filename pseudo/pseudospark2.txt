@@ -1,0 +1,45 @@
+loadData(sparkContext):
+	//load the csv file
+	words = sparkContext.textFile(inputPath);
+	//couples is an RDD of pairs of the form (product, (year, score))
+	couples = words.mapPartitionsWithIndex((index, iterator) -> 
+		if index == 0: //skip the header of csv file
+			iterator.next();
+		return iterator;
+	).mapToPair(line -> 
+		//fields is an array of strings containing the values of the csv
+		fields[] = parseCSVLine(line);
+		productID = fields[Constants.PRODUCT_ID_INDEX]; //PRODUCT_ID_INDEX == 1
+		score = fields[Constants.SCORE_INDEX]; //SCORE_INDEX == 6;
+		//converting unix time to year in the yyyy format
+		year = convertUnixTime2Year(fields[Constants.TIME_INDEX]); //TIME_INDEX == 7
+		//return a pair in the form of (product, (year, score))
+		return (productID, (year, score));
+	);
+
+	return couples;
+
+run(sparkContext):
+	couples = loadData(sparkContext);
+
+	//result is an RDD of pairs of the form (productID, list of pairs (year, avgScore))
+	result = couples.groupByKey() //regroup all the pairs of each product in a list
+	.mapToPair(couple ->
+		//pairs is a list of pairs (year, avgScore)
+		for(i = 2003; i < 2013; i++): 
+			cont = 0;
+			score = 0;
+			for (year, sc) in couple._2:
+				if year == i:
+					score += year2score.score;
+					cont++;
+			mean = 0.0;
+			if cont != 0:
+				mean = score/cont;
+				pairs.add((i, mean));
+
+		return (couple._1, pairs); //(product, list of (year, avgScore))
+	).filter(el -> !el._2.isEmpty()) //filter products having scores
+	.sortByKey();
+
+	return result;

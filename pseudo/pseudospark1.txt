@@ -1,0 +1,57 @@
+loadData(sparkContext):
+	tokens = "[_|$#<>\\^=\\[\\]\\*/\\\\,;,.\\-:()?!\"']"; //regular expression for useless characters
+	//load the csv file
+	words = sparkContext.textFile(inputPath);
+	//couples is an RDD of pairs of the form (year, list of words of the year)
+	couples = words.mapPartitionsWithIndex((index, iterator) -> 
+		if index == 0: //skip the header of csv file
+			iterator.next();
+		return iterator;
+	).mapToPair(line -> 
+		//fields is an array of strings containing the values of the csv
+		fields[] = parseCSVLine(line);
+		summary = fields[Constants.SUMMARY_INDEX].toLowerCase().replaceAll(tokens, " "); //SUMMARY_INDEX == 8;
+		//converting unix time to year in the yyyy format
+		year = convertUnixTime2Year(fields[Constants.TIME_INDEX]); //TIME_INDEX == 7
+		//return a pair in the form of (year, list of words)
+		return (year, list(summary.split(" ")));
+	).mapValues(words ->
+		//trim each word and remove empty ones
+		for word in words:
+			word.trim();
+			if(word.isEmpty()):
+				words.remove(word);
+		return words;
+	).groupByKey().flatMapValues(x -> x); //regroup all list of words of each single year in a list of lists and then flatten it
+
+	return couples;
+
+run(sparkContext):
+	couples = loadData(sparkContext);
+
+	//result is an RDD of pairs of the form (year, list of pairs (word, frequency))
+	result = couples.mapToPair(couple ->
+		//summary2frequency is a dictionary with a word as key and the frequency of that word as value
+		for word in couple._2:
+			frequency = 1;
+			if(summary2frequency.containsKey(word)):
+				frequency = summary2frequency.get(word) + 1;
+			summary2frequency.put(word, frequency);
+
+		summary2frequency.sortByValues();
+
+		//reviews is a list of pairs
+		for word in summary2frequency.keySet():
+			reviews.add((word, summary2frequency.get(word)));
+
+		len = reviews.size();
+		if len > 10:
+			len = 10;
+
+		//cut the list to first 10 or less elements
+		reviews.cut(len);
+
+		return (couple._1, reviews); //(year, list of (word, frequency))
+	).sortByKey();
+
+	return result;

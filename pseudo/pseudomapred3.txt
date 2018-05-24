@@ -1,0 +1,42 @@
+map1(key, value, context):
+	if key == 0:
+		return; //skip the header of csv file
+
+	//fields is an array of strings containing the values of the csv
+	fields[] = parseCSVLine(value);
+
+	userID = fields[Constants.USER_ID_INDEX]; //USER_ID_INDEX == 2
+	productID = fields[Constants.PRODUCT_ID_INDEX]; //PRODUCT_ID_INDEX == 1
+
+	context.write(userID, productID);
+
+reduce1(key, values, context):
+	//productSet is a set of productIDs
+	for productID in values:
+		productSet.add(productID);
+
+	//products is a list of productsIDs
+	products.addAll(productSet);
+
+	for(i = 0; i < products.size() - 1; i++):
+		for(j = i + 1; j < products.size(); j++):
+			product1 = products.get(i);
+			product2 = products.get(j);
+			//making a single string from two products
+			couple = product1 + "," + product2;
+			context.write(couple, key);
+
+map2(key, value, context):
+	//value is a string like "<products couple>\t<userID>"
+	fields = value.split("\t");
+		
+	productCouple = fields[0];
+	userID == fields[1];
+
+	context.write(productCouple, userID);
+
+reduce2(key, values, context):
+	//userIDs is a set of users
+	userIDs.addAll(values);
+
+	context.write(key, userIDs.size());

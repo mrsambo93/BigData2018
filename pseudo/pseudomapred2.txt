@@ -1,0 +1,35 @@
+map(key, value, context):
+	if key == 0:
+		return; //skip the header of csv file
+
+	//fields is an array of strings containing the values of the csv
+	fields[] = parseCSVLine(value);
+	//converting unix time to year in the yyyy format
+	year = convertUnixTime2Year(fields[Constants.TIME_INDEX]); //TIME_INDEX == 7
+	if year >= 2003 and year <= 2012:
+		productID = fields[Constants.PRODUCT_ID_INDEX]; //PRODUCT_ID_INDEX == 1
+		//Year2Score is an object with 2 attributes: year and score
+		year2score = new Year2Score(year, fields[Constants.SCORE_INDEX]); //SCORE_INDEX == 6 
+		context.write(productID, year2score)
+
+reduce(key, values, context):
+	//results is a list of Year2Score objects
+	for(i = 2003; i < 2013; i++): 
+		cont = 0;
+		score = 0;
+		for year2score in values:
+			if year2score.year == i:
+				score += year2score.score;
+				cont++;
+		mean = 0.0;
+		if cont != 0:
+			mean = score/cont;
+			newElem = new Year2Score(i, mean);
+			results.add(newElem);
+
+	//if results is empty, don't do anything
+	if results.isEmpty():
+		return;
+
+	context.write(key, buildStringFromList(results));
+

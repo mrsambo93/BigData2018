@@ -1,0 +1,41 @@
+map(key, value, context):
+	tokens = "[_|$#<>\\^=\\[\\]\\*/\\\\,;,.\\-:()?!\"']"; //regular expression for useless characters
+	
+	if key == 0:
+		return; //skip the header of csv file
+
+	//fields is an array of strings containing the values of the csv
+	fields[] = parseCSVLine(value);
+	//converting unix time to year in the yyyy format
+	year = convertUnixTime2Year(fields[Constants.TIME_INDEX]); //TIME_INDEX == 7
+	//normalizing each word in summary field
+	cleanSummary = fields[Constants.SUMMARY_INDEX].toLowerCase().replaceAll(tokens, " "); //SUMMARY_INDEX == 8;
+
+	for word in cleanSummary:
+		context.write(year, word);
+
+reduce(key, values, context):
+	//summary2frequency is a dictionary with a word as key and the frequency of that word as value
+	for word in values:
+		frequency = 1;
+		if(summary2frequency.containsKey(word)):
+			frequency = summary2frequency.get(word) + 1;
+		summary2frequency.put(word, frequency);
+	
+	//SingleReview is an object with two attributes: word and frequency
+	//reviews is a list of SingleReview objects
+	for word in summary2frequency.keySet():
+		singleReview = new SingleReview(word, summary2frequency.get(word));
+		reviews.add(singleReview);
+
+	//SingleReview objects are comparable by frequency value
+	reviews.descendantSort();
+
+	len = reviews.size();
+	if len > 10:
+		len = 10;
+
+	//cut the list to first 10 or less elements
+	reviews.cut(len);
+
+	context.write(key, buildStringFromList(reviews));

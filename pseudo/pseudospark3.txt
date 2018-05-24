@@ -1,0 +1,37 @@
+loadData(sparkContext):
+	//load the csv file
+	words = sparkContext.textFile(inputPath);
+	//couples is an RDD of pairs of the form (user, product)
+	couples = words.mapPartitionsWithIndex((index, iterator) -> 
+		if index == 0: //skip the header of csv file
+			iterator.next();
+		return iterator;
+	).mapToPair(line -> 
+		//fields is an array of strings containing the values of the csv
+		fields[] = parseCSVLine(line);
+		productID = fields[Constants.PRODUCT_ID_INDEX]; //PRODUCT_ID_INDEX == 1
+		userID = fields[Constants.USER_ID_INDEX]; //USER_ID_INDEX == 2;
+		//return a pair in the form of (user, product)
+		return (userID, productID);
+	);
+
+	return couples;
+
+run(sparkContext):
+	couples = loadData(sparkContext);
+
+	//result is an RDD of pairs of the form ("productID1, productID2", number of users)
+	result = couples.join(couples) //join on userIDs produce pairs in the from of (userID, (product1, prdouct2))
+	//remove all the pairs where product1 and product2 are equals or pairs already visited
+	.filter(user2couple -> user2couple._2._1.compareTo(user2couple._2._2) < 0)
+	.mapToPair(elem -> (elem._2._1 + ", "+ elem._2._2, elem._1)) //insert products in a single string ("productID1, productID2", user)
+	.groupbyKey() //group all the users of a products couple
+	.sortByKey()
+	//counting users
+	.mapToPair(couple2users ->
+		//users is a set of users
+		user.addAll(coupe2users._2);
+		return (couple2users._1, users.size()); //("productID1, productID2", number of users)
+	).sortByKey();
+
+	return result;
