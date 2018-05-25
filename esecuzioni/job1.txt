@@ -1,0 +1,7 @@
+(1999,[(fairy,3), (day,3), (modern,3), (tale,3), (a,3), (is,2), (child,1), (entertainingl,1), (funny,1), (every,1)])
+(2000,[(a,11), (bettlejuice,9), (master,6), (version,5), (great,4), (fabulous,3), (fresh,3), (original,3), (directed,3), (funny,3)])
+(2001,[(beetlejuice,7), (the,6), (dvd,6), (is,4), (a,4), (greatmovie,3), (great,3), (on,3), (terrible,3), (they,3)])
+(2002,[(a,20), (the,15), (great,14), (beetlejuice,12), (of,9), (this,9), (is,9), (movie,9), (for,8), (it,8)])
+(2003,[(the,23), (of,12), (not,11), (great,10), (and,9), (best,8), (in,8), (for,8), (a,8), (but,7)])
+(2004,[(the,116), (best,73), (a,53), (for,43), (good,41), (i,40), (is,39), (great,36), (and,31), (coffee,31)])
+(2005,[(the,213), (a,128), (best,121), (for,108), (great,102), (good,91), (and,82), (of,72), (this,70), (it,70)])
